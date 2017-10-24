@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extendhead %}
+<link rel="stylesheet"
+	  href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet"
+	  href="{% static 'css/jquery-ui.min.css' %}" />
+{% endblock extendhead %}
+
+{% block content %}
+<div class="container">
+	<div id="topbuttons">
+		<a href="#" class="btn btn-sm btn-primary">Add new substance</a>
+	</div>
+	<table id="substancesurvey_list" class="table">
+		<thead>
+			<tr>
+				<th>Added</th>
+				<th>Origin</th>
+				<th>Country</th>
+				<th>City</th>
+				<th>Date</th>
+				<th>Substance</th>
+				<th>Alias</th>
+				<th>Kind</th>
+				<th>Observations</th>
+				<th>Details</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+{% endblock content %}
+
+{% block extendfoot %}
+<script
+	src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script
+	src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+<script
+	src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script>
+
+function format ( data ) {
+
+    return '<div class="survey-details">'+
+    			'<table class="table details-table" cellpadding="5" cellspacing="5" border="0">'+
+	                '<tr>'+
+	                    '<td style="width:100px;"><b>Origin:</b> </td>'+
+	                    '<td>'+data.origin+'</td>'+
+	                '</tr>'+
+	                '<tr>'+
+	                    '<td><b>Source:</b> </td>'+
+	                    '<td>'+data.source+'</td>'+
+	                '</tr>'+
+	                '<tr>'+
+	                    '<td><b>Price:</b> </td>'+
+	                    '<td>'+data.price+'</td>'+
+	                '</tr>'+
+            	'</table>'+
+    			'<table class="table details-table" cellpadding="5" cellspacing="5" border="0">'+
+	                '<tr>'+
+	                    '<td style="width:100px;"><b>Alias:</b> </td>'+
+	                    '<td>'+data.alias+'</td>'+
+	                '</tr>'+
+	                '<tr>'+
+	                    '<td><b>Kind:</b> </td>'+
+	                    '<td>'+data.kind+'</td>'+
+	                '</tr>'+
+	                '<tr>'+
+	                    '<td><b>Test method:</b> </td>'+
+	                    '<td>'+data.test_methods+'</td>'+
+	                '</tr>'+
+            	'</table>'+
+            '</div>'
+}
+
+$(document).ready(function() {
+	$( document ).tooltip({
+		tooltipClass:'tooltip'
+	});
+    var table = $('#substancesurvey_list').DataTable({
+    	"order": [[ 0, "desc" ]],
+		"ajax": {
+			"url": "{% url 'substancesurver_list_api' %}",
+			"type": "GET",
+			"dataSrc": ""
+		},
+		"aoColumns": [
+			{ "mData": "added" },
+			{ "mData": "origin" },
+			{ "mData": "country" },
+			{ "mData": "city" },
+			{ "mData": "date" },
+			{ "mData": "substance" },
+			{ "mData": "alias" },
+			{ "mData": "kind" },
+			{ "mData": "observations" },
+		],
+		"aoColumnDefs": [
+			{
+				"aTargets": [ 9 ],
+				"mData": "origin",
+				"mRender": function ( data, type, full ) {
+					return '<a href="#">Show</a>';
+				}
+			}
+		]
+    });
+
+
+    // Add event listener for opening and closing details
+    table.on('click', 'td', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+
+});
+</script>
+{% endblock extendfoot %}
