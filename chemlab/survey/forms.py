@@ -1,6 +1,6 @@
 from django import forms
 from .models import SubstanceSurvey
-from .widgets import MyWidget
+
 
 class SubstanceSurveyForm(forms.ModelForm):
 
