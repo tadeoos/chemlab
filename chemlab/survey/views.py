@@ -9,12 +9,25 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView
 from rest_framework import generics
 
-from .models import SubstanceSurvey
-from .serializers import SubstanceSurveySerializer
+from .models import *
+from .serializers import *
+from .forms import SubstanceSurveyForm
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 
 class SubstanceSurveyAddView(TemplateView):
 	template_name = 'survey/substancesurvey_add.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(SubstanceSurveyAddView, self).get_context_data(**kwargs)
+		context['form'] = SubstanceSurveyForm()
+		return context
 
 
 class SubstanceSurveyListView(TemplateView):
@@ -26,19 +39,48 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
 	serializer_class = SubstanceSurveySerializer
 
 
-class SubstanceAddAPI(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'survey/substancesurvey_add.html'
+class CountryAPIView(generics.ListAPIView):
+	queryset = Country.objects.all()
+	serializer_class = CountrySerializer
 
-    def get(self, request, pk):
-        ssv = get_object_or_404(SubstanceSurvey, pk=pk)
-        serializer = SubstanceSurveySerializer(ssv)
-        return Response({'serializer': serializer, 'ssv': ssv})
 
-    def post(self, request, pk):
-        ssv = get_object_or_404(SubstanceSurvey, pk=pk)
-        serializer = SubstanceSurveySerializer(ssv, data=request.data)
-        if not serializer.is_valid():
-            return Response({'serializer': serializer, 'ssv': ssv})
-        serializer.save()
-        return redirect('index')
+class CityAPIView(generics.ListAPIView):
+	queryset = City.objects.all()
+	serializer_class = CitySerializer
+
+
+class OriginAPIView(generics.ListAPIView):
+	queryset = Origin.objects.all()
+	serializer_class = OriginSerializer
+
+
+class SourceAPIView(generics.ListAPIView):
+	queryset = Source.objects.all()
+	serializer_class = SourceSerializer
+
+
+class KindAPIView(generics.ListAPIView):
+	queryset = Kind.objects.all()
+	serializer_class = KindSerializer
+	authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
+
+
+class TestMethodAPIView(generics.ListAPIView):
+	queryset = TestMethod.objects.all()
+	serializer_class = TestMethodSerializer
+
+
+class ApperanceAPIView(generics.ListAPIView):
+	queryset = Apperance.objects.all()
+	serializer_class = ApperanceSerializer
+
+
+class ColorAPIView(generics.ListAPIView):
+	queryset = Color.objects.all()
+	serializer_class = ColorSerializer
+
+
+class OriginCodeAPIView(generics.ListAPIView):
+	queryset = OriginCode.objects.all()
+	serializer_class = OriginCodeSerializer

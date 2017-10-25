@@ -103,7 +103,7 @@ class SubstanceSurvey(models.Model):
 							unique=True,
 							default=uuid.uuid4)
 
-	added = models.DateTimeField(auto_now_add=True)
+	added = models.DateField(auto_now_add=True)
 	date = models.CharField(max_length=255, blank=True)
 	country = models.ForeignKey(Country, blank=True)
 	city = models.ForeignKey(City, blank=True)
@@ -115,11 +115,11 @@ class SubstanceSurvey(models.Model):
 	alias = models.CharField(max_length=255, blank=True)
 	substance = models.CharField(max_length=255, blank=True)
 	apperance = models.ForeignKey(Apperance, blank=True)
-	kind = models.ManyToManyField(Kind, blank=True)
+	kinds = models.ManyToManyField(Kind, blank=True)
 	color = models.CharField(max_length=255, blank=True)
 	image = models.ImageField(upload_to='substances', blank=True)
 	observations = models.TextField(blank=True)
-	test_methods = models.ManyToManyField(TestMethod, blank=True)
+	testmethods = models.ManyToManyField(TestMethod, blank=True)
 
 	def __unicode__(self):
 		return self.substance

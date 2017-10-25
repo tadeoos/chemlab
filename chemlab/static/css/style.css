@@ -3,6 +3,9 @@ body {font-size:0.8rem;margin:0;padding:0;}
 #topbuttons {
 	margin-bottom: 1rem;
 }
+#substancesurvey_list tbody tr[role="row"] {
+	cursor: pointer;
+}
 
 #content-wrapper {
 	margin-top: 2rem;
@@ -13,9 +16,11 @@ body {font-size:0.8rem;margin:0;padding:0;}
 }
 
 .survey-details td, td[colspan="8"] {
-	background-color: #f3f3f3;
+	cursor: disabled !important;
+	background-color: #F1F8E9;
+	z-index: 100;
 }
 .details-table {
 	float: left;
-	width:50%;
+	width:33%;
 }

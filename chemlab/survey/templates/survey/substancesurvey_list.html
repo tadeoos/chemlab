@@ -9,10 +9,11 @@
 {% endblock extendhead %}
 
 {% block content %}
-<div class="container">
-	<div id="topbuttons">
-		<a href="#" class="btn btn-sm btn-primary">Add new substance</a>
-	</div>
+
+<div class="container-fluid" id="topbuttons">
+	<a href="{% url 'add_substance' %}" class="btn btn-sm btn-primary">Add new substance</a>
+</div>
+<div class="container-fluid">
 	<table id="substancesurvey_list" class="table">
 		<thead>
 			<tr>
@@ -23,9 +24,8 @@
 				<th>Date</th>
 				<th>Substance</th>
 				<th>Alias</th>
-				<th>Kind</th>
+				<th>Kinds</th>
 				<th>Observations</th>
-				<th>Details</th>
 			</tr>
 		</thead>
 	</table>
@@ -60,19 +60,20 @@ function format ( data ) {
             	'</table>'+
     			'<table class="table details-table" cellpadding="5" cellspacing="5" border="0">'+
 	                '<tr>'+
-	                    '<td style="width:100px;"><b>Alias:</b> </td>'+
-	                    '<td>'+data.alias+'</td>'+
+	                    '<td><b>Apperance:</b> </td>'+
+	                    '<td>'+data.apperance+'</td>'+
 	                '</tr>'+
 	                '<tr>'+
-	                    '<td><b>Kind:</b> </td>'+
-	                    '<td>'+data.kind+'</td>'+
+	                    '<td><b>Color:</b> </td>'+
+	                    '<td>'+data.color+'</td>'+
 	                '</tr>'+
 	                '<tr>'+
-	                    '<td><b>Test method:</b> </td>'+
-	                    '<td>'+data.test_methods+'</td>'+
+	                    '<td><b>Test methods:</b> </td>'+
+	                    '<td>'+data.testmethods+'</td>'+
 	                '</tr>'+
             	'</table>'+
-            '</div>'
+            '</div>'+
+            '<img class="details-table" src="'+data.image+' style="height:130px" />'
 }
 
 $(document).ready(function() {
@@ -94,27 +95,25 @@ $(document).ready(function() {
 			{ "mData": "date" },
 			{ "mData": "substance" },
 			{ "mData": "alias" },
-			{ "mData": "kind" },
+			{ "mData": "kinds" },
 			{ "mData": "observations" },
 		],
 		"aoColumnDefs": [
-			{
-				"aTargets": [ 9 ],
-				"mData": "origin",
-				"mRender": function ( data, type, full ) {
-					return '<a href="#">Show</a>';
-				}
-			}
+			// {
+			// 	"aTargets": [ 9 ],
+			// 	"mData": "origin",
+			// 	"mRender": function ( data, type, full ) {
+			// 		return '<a class="show-details" href="#">Show</a>';
+			// 	}
+			// }
 		]
     });
 
-
-    // Add event listener for opening and closing details
+    // table.on('click', 'td a.show-details', function () {
     table.on('click', 'td', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
- 
-        if ( row.child.isShown() ) {
+         if ( row.child.isShown() ) {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
