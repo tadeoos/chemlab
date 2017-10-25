@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
@@ -30,13 +31,75 @@ class SubstanceSurveyAddView(TemplateView):
 		return context
 
 
-class SubstanceSurveyListView(TemplateView):
-	template_name = 'survey/substancesurvey_list.html'
-
-
 class SubstanceSurveyAPIView(generics.ListAPIView):
 	queryset = SubstanceSurvey.objects.all()
 	serializer_class = SubstanceSurveySerializer
+
+	def post(self, request, format=None):
+		data = request.data
+		print(data)
+		s = SubstanceSurvey()
+
+		country, crt = Country.objects.get_or_create(name=data.get('country'))
+		s.country = country
+		if not crt:
+			country.save()
+
+		city, crt = City.objects.get_or_create(name=data.get('city'))
+		s.city = city
+		if not crt:
+			city.save()
+
+		origin, crt = Origin.objects.get_or_create(name=data.get('origin'))
+		s.origin = origin
+		if not crt:
+			origin.save()
+
+		source, crt = Source.objects.get_or_create(name=data.get('source'))
+		s.source = source
+		if not crt:
+			source.save()
+
+		apperance, crt = Apperance.objects.get_or_create(name=data.get('apperance'))
+		s.apperance = apperance
+		if not crt:
+			apperance.save()
+
+		origin_code, crt = OriginCode.objects.get_or_create(code=data.get('origin_code'))
+		s.origin_code = origin_code
+		if not crt:
+			apperance.save()
+
+		kinds = data.get('kinds')
+		k_l = kinds.split(",")
+		for k in k_l:
+			kind, crt = Kind.objects.get_or_create(name=k)
+			s.kinds.add(kind)
+
+		testmethods = data.get('testmethods')
+		t_l = testmethods.split(",")
+		for t in t_l:
+			testmethod, crt = TestMethod.objects.get_or_create(name=t)
+			s.testmethods.add(testmethod)
+
+		colors = data.get('color')
+		color_list = colors.split(",")
+		for c in color_list:
+			color, crt = Color.objects.get_or_create(name=c)
+			s.color.add(color)
+
+		s.price = data.get('price')
+		s.alias = data.get('alias')
+		s.substance = data.get('substance')
+		s.image = data.get('image')
+		s.observations = data.get('observations')
+		s.save()
+
+		return Response("OK")
+
+
+class SubstanceSurveyListView(TemplateView):
+	template_name = 'survey/substancesurvey_list.html'
 
 
 class CountryAPIView(generics.ListAPIView):
@@ -62,8 +125,7 @@ class SourceAPIView(generics.ListAPIView):
 class KindAPIView(generics.ListAPIView):
 	queryset = Kind.objects.all()
 	serializer_class = KindSerializer
-	authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-
+	# authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
 
 class TestMethodAPIView(generics.ListAPIView):

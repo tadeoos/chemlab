@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load static rest_framework %}
+{% load static rest_framework bootstrap_forms %}
 
 {% block extendhead %}
 <link rel="stylesheet"
@@ -9,17 +9,59 @@
 {% endblock extendhead %}
 
 {% block content %}
-{{ form }}
+<div class="container">
+	<h1>Add new substance survey</h1>
+	<form id="new_sbst_form">
+	{% csrf_token %}
+	{{ form|as_bootstrap }}
+	<input id="submit" type="submit" class="btn btn-primary" value="Save" />
+	</form>
+</div>
 {% endblock content %}
 
 {% block extendfoot %}
 <script
 	src="{% static 'js/selectize.min.js' %}"></script>
+<script 
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"
+	integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i"
+	crossorigin="anonymous"></script>
+
 <script>
+
+function load_function(query, callback) {
+	// Get list of objects by calling API. Url for request is 
+	// generated from input name field.
+	$.ajax({
+		// Wyszukaj nazwę dla modelu w api.
+		url: '/api/'+$(this)[0]['$input'][0]['name']+'/',
+		type: 'GET',
+		dataType: 'json',
+		error: function () {
+			callback();
+		},
+		success: function (res) {
+			callback(res);
+		}
+	});
+}
+
 $(document).ready(function() {
 
-	$('.fss').selectize({
-		delimiter: ',',
+	$("#new_sbst_form #submit").on('click', function(event) {
+		event.preventDefault();
+		$("#new_sbst_form").ajaxSubmit({
+			type: "POST",
+			url: "{% url 'substancesurver_api' %}",
+			success: function() {
+				window.location.replace("{% url 'index' %}")
+			}
+			
+		});
+	});
+
+	options = {
+		maxItems: 1,
 		valueField: 'value',
 		labelField: 'text',
 		persist: true,
@@ -35,25 +77,13 @@ $(document).ready(function() {
 				return '<div>' + item.text + '</div>';
 			}
 		},
-		load: function (query, callback) {
-			$.ajax({
-				// Wyszukaj nazwę dla modelu w api.
-				url: '/api/'+$(this)[0]['$input'][0]['name']+'/',
-				type: 'GET',
-				dataType: 'json',
-				error: function () {
-					callback();
-				},
-				success: function (res) {
-					callback(res);
-				}
-			});
-		}
-	});
+		load: load_function
+	}
 
+	$('.singleinputautocomplete').selectize(options);
+	delete options.maxItems;
+	$('.multipleinputautocomplete').selectize(options);
 
 });
-
-	// $('.fss').fastselect();
 </script>
 {% endblock extendfoot %}

@@ -8,6 +8,7 @@ from django.db import models
 class Country(models.Model):
 	""" Substance's country of origin.
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=20)
@@ -18,6 +19,7 @@ class Country(models.Model):
 class City(models.Model):
 	""" Substance's city of origin.
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=40)
@@ -28,6 +30,7 @@ class City(models.Model):
 class Origin(models.Model):
 	""" Substance's type of origin (online, offline etc.).
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=20)
@@ -38,6 +41,7 @@ class Origin(models.Model):
 class Source(models.Model):
 	""" Substance's source of origin (user, anonymouse, etc).
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=30)
@@ -48,6 +52,7 @@ class Source(models.Model):
 class Kind(models.Model):
 	""" Kind of substance (stimulant, psychedelic etc).
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=30)
@@ -58,6 +63,7 @@ class Kind(models.Model):
 class TestMethod(models.Model):
 	""" Testing methods used to analyze substance.
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=20)	
@@ -68,6 +74,7 @@ class TestMethod(models.Model):
 class Apperance(models.Model):
 	""" Substance's apperance
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=30)
@@ -78,6 +85,7 @@ class Apperance(models.Model):
 class Color(models.Model):
 	""" Substance's color.
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	name = models.CharField(primary_key=True,
 							unique=True,
 							max_length=20)
@@ -88,6 +96,7 @@ class Color(models.Model):
 class OriginCode(models.Model):
 	""" Code of origin.
 	"""
+	modified = models.DateTimeField(auto_now=True)
 	code = models.CharField(primary_key=True,
 							unique=True,
 							max_length=50)
@@ -104,8 +113,7 @@ class SubstanceSurvey(models.Model):
 							default=uuid.uuid4)
 
 	added = models.DateField(auto_now_add=True)
-	date = models.CharField(max_length=255, blank=True)
-	country = models.ForeignKey(Country, blank=True)
+	country = models.ForeignKey(Country, blank=True, null=True)
 	city = models.ForeignKey(City, blank=True)
 	origin = models.ForeignKey(Origin, blank=True)
 	origin_code = models.ForeignKey(OriginCode, blank=True)
@@ -116,7 +124,7 @@ class SubstanceSurvey(models.Model):
 	substance = models.CharField(max_length=255, blank=True)
 	apperance = models.ForeignKey(Apperance, blank=True)
 	kinds = models.ManyToManyField(Kind, blank=True)
-	color = models.CharField(max_length=255, blank=True)
+	color = models.ManyToManyField(Color, blank=True)
 	image = models.ImageField(upload_to='substances', blank=True)
 	observations = models.TextField(blank=True)
 	testmethods = models.ManyToManyField(TestMethod, blank=True)

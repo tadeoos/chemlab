@@ -1,3 +1,4 @@
 *.py[cod]
 env/
 *.sqlite3
+chemlab/media/

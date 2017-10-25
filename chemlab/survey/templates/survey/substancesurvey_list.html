@@ -21,7 +21,6 @@
 				<th>Origin</th>
 				<th>Country</th>
 				<th>City</th>
-				<th>Date</th>
 				<th>Substance</th>
 				<th>Alias</th>
 				<th>Kinds</th>
@@ -73,7 +72,9 @@ function format ( data ) {
 	                '</tr>'+
             	'</table>'+
             '</div>'+
-            '<img class="details-table" src="'+data.image+' style="height:130px" />'
+            '<div class="details-table" style="float:right">'+
+            '<img style="height:133px" src="'+data.image+'" />'+
+            '</div>'
 }
 
 $(document).ready(function() {
@@ -83,7 +84,7 @@ $(document).ready(function() {
     var table = $('#substancesurvey_list').DataTable({
     	"order": [[ 0, "desc" ]],
 		"ajax": {
-			"url": "{% url 'substancesurver_list_api' %}",
+			"url": "{% url 'substancesurver_api' %}",
 			"type": "GET",
 			"dataSrc": ""
 		},
@@ -92,7 +93,6 @@ $(document).ready(function() {
 			{ "mData": "origin" },
 			{ "mData": "country" },
 			{ "mData": "city" },
-			{ "mData": "date" },
 			{ "mData": "substance" },
 			{ "mData": "alias" },
 			{ "mData": "kinds" },
