@@ -1,5 +1,9 @@
 body {font-size:0.8rem;margin:0;padding:0;}
 
+#new_sbst_form {
+	padding-bottom: 2rem;
+}
+
 #topbuttons {
 	margin-bottom: 1rem;
 	padding-left:1.8rem;
