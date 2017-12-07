@@ -5,7 +5,7 @@
 {% block extendhead %}
 <link rel="stylesheet"
 	  href="{% static 'css/selectize.bootstrap3.css' %}" />
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 {% endblock extendhead %}
 
 {% block content %}
@@ -27,6 +27,8 @@
 	integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i"
 	crossorigin="anonymous"></script>
 
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script>
 
 function load_function(query, callback) {
@@ -37,7 +39,7 @@ function load_function(query, callback) {
 		url: '/api/'+$(this)[0]['$input'][0]['name']+'/',
 		type: 'GET',
 		dataType: 'json',
-		error: function () {
+		error: function (res) {
 			callback();
 		},
 		success: function (res) {
@@ -83,7 +85,9 @@ $(document).ready(function() {
 	$('.singleinputautocomplete').selectize(options);
 	delete options.maxItems;
 	$('.multipleinputautocomplete').selectize(options);
-
+	delete options.create;
+	$('.multipleinputautocomplete_nocrt').selectize(options);
+	$("#id_date_acquired").datepicker({ dateFormat: 'yy-mm-dd' }).datepicker('setDate', new Date());
 });
 </script>
 {% endblock extendfoot %}

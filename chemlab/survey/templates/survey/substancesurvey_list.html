@@ -19,7 +19,7 @@
 			<tr>
 				<th>Added</th>
 				<th>Origin</th>
-				<th>Country</th>
+				<th>Region</th>
 				<th>City</th>
 				<th>Substance</th>
 				<th>Alias</th>
@@ -41,12 +41,15 @@
 <script>
 
 function format ( data ) {
-
-    return '<div class="survey-details">'+
+    html_string = '<div class="survey-details">'+
     			'<table class="table details-table" cellpadding="5" cellspacing="5" border="0">'+
 	                '<tr>'+
 	                    '<td style="width:100px;"><b>Origin:</b> </td>'+
 	                    '<td>'+data.origin+'</td>'+
+	                '</tr>'+
+	                '<tr>'+
+	                    '<td><b>Acquired from:</b> </td>'+
+	                    '<td>'+data.acquired_from+'</td>'+
 	                '</tr>'+
 	                '<tr>'+
 	                    '<td><b>Source:</b> </td>'+
@@ -71,16 +74,27 @@ function format ( data ) {
 	                    '<td>'+data.testmethods+'</td>'+
 	                '</tr>'+
             	'</table>'+
-            '</div>'+
-            '<div class="details-table" style="float:right">'+
-            '<img style="height:133px" src="'+data.image+'" />'+
+
+				'<div class="details-table" style="float:right">'+
+	            	'<img style="height:133px" src="'+data.image+'" />'+
+	            '</div>'+
+	            '<div class="clear"></div>'+
+	            '<div class="detected">'+
+	            	'<b>Detected substances:</b><br/>'
+
+	data.detected.forEach(function (drug) {
+		html_string += drug + ", "
+	});
+
+	html_string += '</div>'+
             '</div>'
+    return html_string
 }
 
 $(document).ready(function() {
-	$( document ).tooltip({
-		tooltipClass:'tooltip'
-	});
+
+	$( document ).tooltip();
+
     var table = $('#substancesurvey_list').DataTable({
     	"order": [[ 0, "desc" ]],
 		"ajax": {
@@ -91,7 +105,7 @@ $(document).ready(function() {
 		"aoColumns": [
 			{ "mData": "added" },
 			{ "mData": "origin" },
-			{ "mData": "country" },
+			{ "mData": "region" },
 			{ "mData": "city" },
 			{ "mData": "substance" },
 			{ "mData": "alias" },

@@ -3,17 +3,19 @@ from .models import *
 
 
 class SubstanceSurveySerializer(serializers.ModelSerializer):
+	detected = serializers.ListField(source='get_detected')
 	class Meta:
 		model = SubstanceSurvey
 		fields = '__all__'
 
 
-class CountrySerializer(serializers.ModelSerializer):
+class RegionSerializer(serializers.ModelSerializer):
 	text = serializers.CharField(source='pk')
 	value = serializers.CharField(source='pk')
 	class Meta:
-		model = Country
+		model = Region
 		fields = ('text', 'value')
+
 
 class CitySerializer(serializers.ModelSerializer):
 	text = serializers.CharField(source='pk')
@@ -23,11 +25,43 @@ class CitySerializer(serializers.ModelSerializer):
 		fields = ('text', 'value')
 
 
+class AcquiredFromSerializer(serializers.ModelSerializer):
+	text = serializers.CharField(source='pk')
+	value = serializers.CharField(source='pk')
+	class Meta:
+		model = AcquiredFrom
+		fields = ('text', 'value')
+
+
 class OriginSerializer(serializers.ModelSerializer):
 	text = serializers.CharField(source='pk')
 	value = serializers.CharField(source='pk')
 	class Meta:
 		model = Origin
+		fields = ('text', 'value')
+
+
+class UserCodeSerializer(serializers.ModelSerializer):
+	text = serializers.CharField(source='pk')
+	code = serializers.CharField(source='pk')
+	class Meta:
+		model = UserCode
+		fields = ('text', 'code')
+
+
+class AliasSerializer(serializers.ModelSerializer):
+	text = serializers.CharField(source='pk')
+	value = serializers.CharField(source='pk')
+	class Meta:
+		model = Alias
+		fields = ('text', 'value')
+
+
+class SubstanceSerializer(serializers.ModelSerializer):
+	text = serializers.CharField(source='pk')
+	value = serializers.CharField(source='pk')
+	class Meta:
+		model = Substance
 		fields = ('text', 'value')
 
 
@@ -76,4 +110,12 @@ class OriginCodeSerializer(serializers.ModelSerializer):
 	value = serializers.CharField(source='pk')
 	class Meta:
 		model = OriginCode
+		fields = ('text', 'value')
+
+
+class DrugSerializer(serializers.ModelSerializer):
+	text = serializers.CharField(source='name')
+	value = serializers.CharField(source='name')
+	class Meta:
+		model = Drug
 		fields = ('text', 'value')

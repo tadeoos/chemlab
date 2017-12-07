@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import cgi
 import uuid
 from django.db import models
 
@@ -104,33 +105,126 @@ class OriginCode(models.Model):
 		return self.code
 
 
+class Region(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	name = models.CharField(primary_key=True,
+							unique=True,
+							max_length=20)
+	def __unicode__(self):
+		return self.name
+
+
+class AcquiredFrom(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	name = models.CharField(primary_key=True,
+							unique=True,
+							max_length=20)
+	def __unicode__(self):
+		return self.name
+
+
+class UserCode(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	code = models.CharField(primary_key=True,
+							unique=True,
+							max_length=50)
+	def __unicode__(self):
+		return self.code
+
+
+class SampleCode(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	code = models.CharField(primary_key=True,
+							unique=True,
+							max_length=50)
+	def __unicode__(self):
+		return self.code
+
+
+class Substance(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	name = models.CharField(primary_key=True,
+							unique=True,
+							max_length=50)
+	def __unicode__(self):
+		return self.name
+
+
+class Alias(models.Model):
+	""" Substance origin's region """
+
+	modified = models.DateTimeField(auto_now=True)
+	name = models.CharField(primary_key=True,
+							unique=True,
+							max_length=50)
+	def __unicode__(self):
+		return self.name
+
+
+class Drug(models.Model):
+	name = models.CharField(max_length=50)
+	summary = models.TextField(null=True, blank=True)
+
+	def __unicode__(self):
+		return self.name
+
+
 class SubstanceSurvey(models.Model):
-	""" Substance survey.
-	"""
+	""" Substance survey """
+
+	# Meta
+	added = models.DateField(auto_now_add=True)
 	uuid = models.UUIDField(primary_key=True,
 							editable=False, 
 							unique=True,
 							default=uuid.uuid4)
 
-	added = models.DateField(auto_now_add=True)
-	country = models.ForeignKey(Country, blank=True, null=True)
-	city = models.ForeignKey(City, blank=True)
-	origin = models.ForeignKey(Origin, blank=True)
-	origin_code = models.ForeignKey(OriginCode, blank=True)
-	source = models.ForeignKey(Source, blank=True)
+	# Sample information
+	region = models.ForeignKey(Region, null=True, blank=True)
+	city = models.ForeignKey(City, null=True, blank=True)
+	acquired_from = models.ForeignKey(AcquiredFrom, null=True, blank=True)
+	origin = models.ForeignKey(Origin, null=True, blank=True)
+	date_acquired = models.DateField(null=True, blank=True)
 	price = models.CharField(max_length=255, blank=True)
+	sample_code = models.CharField(max_length=255, null=True, blank=True)
 
-	alias = models.CharField(max_length=255, blank=True)
-	substance = models.CharField(max_length=255, blank=True)
-	apperance = models.ForeignKey(Apperance, blank=True)
+	# Origin user
+	user_code = models.ForeignKey(UserCode, null=True, blank=True)
+	contact = models.CharField(null=True, blank=True, max_length=255)
+
+	# Substance
+	alias = models.ForeignKey(Alias, null=True, blank=True)
+	substance = models.ForeignKey(Substance, null=True, blank=True)
+	apperance = models.ForeignKey(Apperance, null=True, blank=True)
 	kinds = models.ManyToManyField(Kind, blank=True)
 	color = models.ManyToManyField(Color, blank=True)
 	image = models.ImageField(upload_to='substances', blank=True)
+
+	# Survey
 	observations = models.TextField(blank=True)
 	testmethods = models.ManyToManyField(TestMethod, blank=True)
 
+	detected = models.ManyToManyField(Drug, blank=True)
+
+	def get_detected(self):
+		r = []
+		for drug in self.detected.all():
+			r.append("<span class='drug-tooltip' title='{}'>{}</span>".format(drug.summary, drug.name))
+		return r
+
+
 	def __unicode__(self):
-		return self.substance
+		return str(self.uuid)
 
 	class Meta:
 		ordering = ['-added']
