@@ -222,7 +222,12 @@ class SubstanceSurvey(models.Model):
 			r.append("<span class='drug-tooltip' title='{}'>{}</span>".format(drug.summary, drug.name))
 		return r
 
-
+	def get_image_url(self):
+		if self.image:
+			return self.image.url
+		else:
+			return ""
+			
 	def __unicode__(self):
 		return str(self.uuid)
 

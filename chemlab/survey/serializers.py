@@ -3,7 +3,7 @@ from .models import *
 
 
 class SubstanceSurveySerializer(serializers.ModelSerializer):
-	image = serializers.CharField(source='image.url')
+	image = serializers.CharField(source='get_image_url')
 	detected = serializers.ListField(source='get_detected')
 	class Meta:
 		model = SubstanceSurvey

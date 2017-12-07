@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
-from .forms import SubstanceSurveyForm
+from .forms import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
@@ -27,7 +27,9 @@ class SubstanceSurveyAddView(TemplateView):
 
 	def get_context_data(self, **kwargs):
 		context = super(SubstanceSurveyAddView, self).get_context_data(**kwargs)
-		context['form'] = SubstanceSurveyForm()
+		context['primary_form'] = PrimaryForm()
+		context['secondary_form'] = SecondaryForm()
+		context['tertiary_form'] = TertiaryForm()
 		return context
 
 
