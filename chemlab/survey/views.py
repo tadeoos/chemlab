@@ -14,14 +14,17 @@ from .models import *
 from .serializers import *
 from .forms import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
-
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class SubstanceSurveyAddView(TemplateView):
 	template_name = 'survey/substancesurvey_add.html'
 

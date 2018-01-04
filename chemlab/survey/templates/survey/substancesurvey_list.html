@@ -10,9 +10,12 @@
 
 {% block content %}
 
+{% if user.is_staff %}
 <div class="container-fluid" id="topbuttons">
 	<a href="{% url 'add_substance' %}" class="btn btn-sm btn-primary">Add new substance</a>
 </div>
+{% endif %}
+
 <div class="container-fluid">
 	<table id="substancesurvey_list" class="table">
 		<thead>
