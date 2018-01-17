@@ -31,4 +31,7 @@ admin.site.register(Kind)
 admin.site.register(TestMethod)
 admin.site.register(Drug)
 admin.site.register(UserCode)
-
+admin.site.register(AcquiredFrom)
+admin.site.register(Alias)
+admin.site.register(Substance)
+admin.site.register(Color)
