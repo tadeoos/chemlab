@@ -40,95 +40,126 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
     serializer_class = SubstanceSurveySerializer
 
     def get_queryset(self):
-        user = self.request.query_params.get('user', None)
-        if user is None:
-            queryset = SubstanceSurvey.objects.exclude(user_code__isnull=False)
+        if self.request.user.is_staff:
+            queryset = SubstanceSurvey.objects.all()
         else:
-            queryset = SubstanceSurvey.objects.filter(user_code=user)
+            user = self.request.query_params.get('user', None)
+            if user is None:
+                queryset = SubstanceSurvey.objects.exclude(user_code__isnull=False)
+            else:
+                queryset = SubstanceSurvey.objects.filter(user_code=user)
         return queryset
 
     def post(self, request, format=None):
         data = request.data
-        s = SubstanceSurvey()
+        s = SubstanceSurvey.objects.create()
+        get_data = data.get('date_acquired')
+        if get_data != '':
+            s.date_acquired = get_data
+        get_data = data.get('price')
+        if get_data != '':
+            s.price = get_data
+        get_data = data.get('sample_code')
+        if get_data != '':
+            s.sample_code = get_data
+        get_data = data.get('image')
+        if get_data != '':
+            s.image = get_data
+        get_data = data.get('observations')
+        if get_data != '':
+            s.observations = get_data
+        get_data = data.get('contact')
+        if get_data != '':
+            s.contact = get_data
 
-        region, crt = Region.objects.get_or_create(name=data.get('region'))
-        s.region = region
-        if not crt:
-            region.save()
+        get_data = data.get('region')
+        if get_data != '':
+            region, crt = Region.objects.get_or_create(name=get_data)
+            if not crt:
+                region.save()
+            s.region = region
 
-        city, crt = City.objects.get_or_create(name=data.get('city'))
-        s.city = city
-        if not crt:
-            city.save()
+        get_data = data.get('city')
+        if get_data != '':
+            city, crt = City.objects.get_or_create(name=get_data)
+            if not crt:
+                city.save()
+            s.city = city
 
-        acquired_from, crt = AcquiredFrom.objects.get_or_create(name=data.get('acquired_from'))
-        s.acquired_from = acquired_from
-        if not crt:
-            acquired_from.save()
+        get_data = data.get('acquired_from')
+        if get_data != '':
+            acquired_from, crt = AcquiredFrom.objects.get_or_create(name=get_data)
+            if not crt:
+                acquired_from.save()
+            s.acquired_from = acquired_from
 
-        origin, crt = Origin.objects.get_or_create(name=data.get('origin'))
-        s.origin = origin
-        if not crt:
-            origin.save()
+        get_data = data.get('origin')
+        if get_data != '':
+            origin, crt = Origin.objects.get_or_create(name=get_data)
+            if not crt:
+                origin.save()
+            s.origin = origin
 
-        s.date_acquired = data.get('date_acquired')
-        s.price = data.get('price')
-        s.sample_code = data.get('sample_code')
+        get_data = data.get('user_code')
+        if get_data != '':
+            user_code, crt = UserCode.objects.get_or_create(code=get_data)
+            if not crt:
+                user_code.save()
+            s.user_code = user_code
 
-        user_code, crt = UserCode.objects.get_or_create(code=data.get('user_code'))
-        s.user_code = user_code
-        if not crt:
-            user_code.save()
+        get_data = data.get('alias')
+        if get_data != '':
+            alias, crt = Alias.objects.get_or_create(name=get_data)
+            if not crt:
+                alias.save()
+            s.alias = alias
 
-        s.contact = data.get('contact')
+        get_data = data.get('substance')
+        if get_data != '':
+            substance, crt = Substance.objects.get_or_create(name=get_data)
+            if not crt:
+                substance.save()
+            s.substance = substance
 
-        alias, crt = Alias.objects.get_or_create(name=data.get('alias'))
-        s.alias = alias
-        if not crt:
-            alias.save()
+        get_data = data.get('apperance')
+        if get_data != '':
+            apperance, crt = Apperance.objects.get_or_create(name=get_data)
+            if not crt:
+                apperance.save()
+            s.apperance = apperance
 
-        substance, crt = Substance.objects.get_or_create(name=data.get('substance'))
-        s.substance = substance
-        if not crt:
-            substance.save()
+        get_data = data.get('kinds')
+        if get_data != '':
+            k_l = get_data.split(",")
+            for k in k_l:
+                kind, crt = Kind.objects.get_or_create(name=k)
+                s.kinds.add(kind)
 
-        apperance, crt = Apperance.objects.get_or_create(name=data.get('apperance'))
-        s.apperance = apperance
-        if not crt:
-            apperance.save()
+        get_data = data.get('color')
+        if get_data != '':
+            color_list = get_data.split(",")
+            for c in color_list:
+                color, crt = Color.objects.get_or_create(name=c)
+                s.color.add(color)
 
-        kinds = data.get('kinds')
-        k_l = kinds.split(",")
-        for k in k_l:
-            kind, crt = Kind.objects.get_or_create(name=k)
-            s.kinds.add(kind)
+        get_data = data.get('testmethods')
+        if get_data != '':
+            t_l = get_data.split(",")
+            for t in t_l:
+                testmethod, crt = TestMethod.objects.get_or_create(name=t)
+                s.testmethods.add(testmethod)
 
-        colors = data.get('color')
-        color_list = colors.split(",")
-        for c in color_list:
-            color, crt = Color.objects.get_or_create(name=c)
-            s.color.add(color)
-
-        s.image = data.get('image')
-        s.observations = data.get('observations')
-
-        testmethods = data.get('testmethods')
-        t_l = testmethods.split(",")
-        for t in t_l:
-            testmethod, crt = TestMethod.objects.get_or_create(name=t)
-            s.testmethods.add(testmethod)
-
-        detected = data.get('detected')
-        d_l = detected.split(",")
-        for d in d_l:
-            try:
-                dect = Drug.objects.get(name=d)
-                s.detected.add(dect)
-            except:
-                pass
+        get_data = data.get('detected')
+        if get_data != '':
+            d_l = get_data.split(",")
+            for d in d_l:
+                try:
+                    dect = Drug.objects.get(name=d)
+                    s.detected.add(dect)
+                except:
+                    pass
 
         s.save()
-
         return Response("OK")
 
 

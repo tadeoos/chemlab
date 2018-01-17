@@ -9,9 +9,9 @@
 {% endblock extendhead %}
 
 {% block usercodeform %}
-	<form class="form-inline my-2 my-lg-0">
+	<form id="user_code_form" class="form-inline my-2 my-lg-0">
 		<input id="user_code_input" class="form-control form-control-sm mr-sm-2" type="text" placeholder="Enter user code">
-		<div id="user_code_submit" class="btn btn-sm btn-success my-2 my-sm-0">Enter</div>
+		<button type="submit" id="user_code_submit" class="btn btn-sm btn-success my-2 my-sm-0">Enter</button>
 	</form>
 {% endblock usercodeform %}
 
@@ -129,12 +129,11 @@ $(document).ready(function() {
 		}
 	} );
 
-	// User code
-    $('#user_code_submit').on( 'click', function () {
+	$("#user_code_form").on('submit', function(event) {
+		event.preventDefault();
     	var user_code = $('#user_code_input').val();
-    	console.log(user_code);
 		table.ajax.url( '/api/substances/?user='+user_code ).load();
-    } );
+	});
 
 });
 </script>

@@ -65,7 +65,7 @@ function load_function(query, callback) {
 
 $(document).ready(function() {
 
-	$("#new_sbst_form #submit").on('click', function(event) {
+	$("#new_sbst_form").on('submit', function(event) {
 		event.preventDefault();
 		$("#new_sbst_form").ajaxSubmit({
 			type: "POST",
@@ -73,7 +73,6 @@ $(document).ready(function() {
 			success: function() {
 				window.location.replace("{% url 'index' %}")
 			}
-			
 		});
 	});
 
