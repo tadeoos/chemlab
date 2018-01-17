@@ -89,4 +89,4 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-SECRET_KEY = 'yv%bocqm2ms8!4wo@3iv0+e+q92xet4r%cw=^s7mq9sz&d_@ai'
+from _core.settings_secret import *
