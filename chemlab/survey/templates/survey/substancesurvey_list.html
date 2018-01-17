@@ -8,14 +8,19 @@
 	  href="{% static 'css/jquery-ui.min.css' %}" />
 {% endblock extendhead %}
 
-{% block content %}
+{% block usercodeform %}
+	<form class="form-inline my-2 my-lg-0">
+		<input id="user_code_input" class="form-control form-control-sm mr-sm-2" type="text" placeholder="Enter user code">
+		<div id="user_code_submit" class="btn btn-sm btn-success my-2 my-sm-0">Enter</div>
+	</form>
+{% endblock usercodeform %}
 
+{% block content %}
 {% if user.is_staff %}
 <div class="container-fluid" id="topbuttons">
 	<a href="{% url 'add_substance' %}" class="btn btn-sm btn-primary">Add new substance</a>
 </div>
 {% endif %}
-
 <div class="container-fluid">
 	<table id="substancesurvey_list" class="table">
 		<thead>
@@ -82,12 +87,8 @@ function format ( data ) {
 				'<div class="detected">'+
 					'<b>Detected substances:</b><br/>'
 
-	data.detected.forEach(function (drug) {
-		html_string += drug + ", "
-	});
-
-	html_string += '</div>'+
-			'</div>'
+	data.detected.forEach(function (drug) { html_string += drug + ", " });
+	html_string += '</div></div>'
 	return html_string
 }
 
@@ -111,33 +112,29 @@ $(document).ready(function() {
 			{ "mData": "alias" },
 			{ "mData": "kinds" },
 			{ "mData": "observations" },
-		],
-		"aoColumnDefs": [
-			// {
-			// 	"aTargets": [ 9 ],
-			// 	"mData": "origin",
-			// 	"mRender": function ( data, type, full ) {
-			// 		return '<a class="show-details" href="#">Show</a>';
-			// 	}
-			// }
 		]
 	});
 
-	// table.on('click', 'td a.show-details', function () {
+	// Survey details
 	table.on('click', 'td', function () {
 		var tr = $(this).closest('tr');
 		var row = table.row( tr );
 		 if ( row.child.isShown() ) {
-			// This row is already open - close it
 			row.child.hide();
 			tr.removeClass('shown');
 		}
 		else {
-			// Open this row
 			row.child( format(row.data()) ).show();
 			tr.addClass('shown');
 		}
 	} );
+
+	// User code
+    $('#user_code_submit').on( 'click', function () {
+    	var user_code = $('#user_code_input').val();
+    	console.log(user_code);
+		table.ajax.url( '/api/substances/?user='+user_code ).load();
+    } );
 
 });
 </script>
