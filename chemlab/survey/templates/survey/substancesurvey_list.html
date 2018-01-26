@@ -8,12 +8,12 @@
 	  href="{% static 'css/jquery-ui.min.css' %}" />
 {% endblock extendhead %}
 
-{% block usercodeform %}
-	<form id="user_code_form" class="form-inline my-2 my-lg-0">
-		<input id="user_code_input" class="form-control form-control-sm mr-sm-2" type="text" placeholder="Enter user code">
-		<button type="submit" id="user_code_submit" class="btn btn-sm btn-success my-2 my-sm-0">Enter</button>
+{% block samplecodeform %}
+	<form id="sample_code_form" class="form-inline my-2 my-lg-0">
+		<input id="sample_code_input" class="form-control form-control-sm mr-sm-2" type="text" placeholder="Enter sample code">
+		<button type="submit" id="sample_code_submit" class="btn btn-sm btn-success my-2 my-sm-0">Show</button>
 	</form>
-{% endblock usercodeform %}
+{% endblock samplecodeform %}
 
 {% block content %}
 {% if user.is_staff %}
@@ -25,13 +25,13 @@
 	<table id="substancesurvey_list" class="table">
 		<thead>
 			<tr>
-				<th>Added</th>
+				<th>Acquired</th>
 				<th>Origin</th>
 				<th>Region</th>
 				<th>City</th>
 				<th>Substance</th>
 				<th>Alias</th>
-				<th>Kinds</th>
+				<th>Detected</th>
 				<th>Observations</th>
 			</tr>
 		</thead>
@@ -52,9 +52,10 @@ function format ( data ) {
 	html_string = '<div class="survey-details">'+
 				'<table class="table details-table" cellpadding="5" cellspacing="5" border="0">'+
 					'<tr>'+
-						'<td style="width:100px;"><b>Origin:</b> </td>'+
-						'<td>'+data.origin+'</td>'+
-					'</tr>'+
+						'<td style="width:100px;"><b>Kinds:</b> </td><td>'
+
+	data.kinds.forEach(function (kind) { html_string += " "+kind });
+	html_string += '</td></tr>'+
 					'<tr>'+
 						'<td><b>Acquired from:</b> </td>'+
 						'<td>'+data.acquired_from+'</td>'+
@@ -78,12 +79,7 @@ function format ( data ) {
 						'<td>'+data.testmethods+'</td>'+
 					'</tr>'+
 				'</table>'+
-				'<img class="survey_image" src="'+data.image+'" />'+
-				'<div class="clear"></div>'+
-				'<div class="detected">'+
-					'<b>Detected substances:</b><br/>'
-
-	data.detected.forEach(function (drug) { html_string += drug + ", " });
+				'<img class="survey_image" src="'+data.image+'" />'
 	html_string += '</div></div>'
 	return html_string
 }
@@ -100,13 +96,13 @@ $(document).ready(function() {
 			"dataSrc": ""
 		},
 		"aoColumns": [
-			{ "mData": "added" },
+			{ "mData": "date_acquired" },
 			{ "mData": "origin" },
 			{ "mData": "region" },
 			{ "mData": "city" },
 			{ "mData": "substance" },
 			{ "mData": "alias" },
-			{ "mData": "kinds" },
+			{ "mData": "detected[ ]" },
 			{ "mData": "observations" },
 		]
 	});
@@ -125,10 +121,10 @@ $(document).ready(function() {
 		}
 	} );
 
-	$("#user_code_form").on('submit', function(event) {
+	$("#sample_code_form").on('submit', function(event) {
 		event.preventDefault();
-    	var user_code = $('#user_code_input').val();
-		table.ajax.url( '/api/substances/?user='+user_code ).load();
+    	var sample_code = $('#sample_code_input').val();
+		table.ajax.url( '/api/substances/?sample='+sample_code ).load();
 	});
 
 });

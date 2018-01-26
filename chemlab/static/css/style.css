@@ -1,6 +1,7 @@
 body {font-size:0.8rem;margin:0;padding:0;}
 
 #new_sbst_form {
+	margin-bottom: 10rem;
 	padding-bottom: 3rem;
 }
 
@@ -45,5 +46,8 @@ body {font-size:0.8rem;margin:0;padding:0;}
 }
 
 .drug-tooltip {
+	font-size:0.7rem;
+	margin-bottom: 3px;
+	text-transform: uppercase;
 	cursor: crosshair;
 }

@@ -175,6 +175,9 @@ class Drug(models.Model):
 	name = models.CharField(max_length=50)
 	summary = models.TextField(null=True, blank=True)
 
+	class Meta:
+		ordering = ['name']
+
 	def __unicode__(self):
 		return self.name
 
@@ -219,7 +222,7 @@ class SubstanceSurvey(models.Model):
 	def get_detected(self):
 		r = []
 		for drug in self.detected.all():
-			r.append("<span class='drug-tooltip' title='{}'>{}</span>".format(drug.summary, drug.name))
+			r.append("<span class='drug-tooltip badge badge-pill badge-primary' title='{}'>{}</span>".format(drug.summary, drug.name))
 		return r
 
 	def get_image_url(self):

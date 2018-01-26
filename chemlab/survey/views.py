@@ -5,6 +5,8 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -43,11 +45,12 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
         if self.request.user.is_staff:
             queryset = SubstanceSurvey.objects.all()
         else:
-            user = self.request.query_params.get('user', None)
-            if user is None:
-                queryset = SubstanceSurvey.objects.exclude(user_code__isnull=False)
+            sample = self.request.query_params.get('sample', None)
+            if sample is not None:
+                queryset = SubstanceSurvey.objects.filter(sample_code=sample)
             else:
-                queryset = SubstanceSurvey.objects.filter(user_code=user)
+                queryset = SubstanceSurvey.objects.exclude(user_code__isnull=False)
+                
         return queryset
 
     def post(self, request, format=None):
@@ -161,6 +164,14 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
 
         s.save()
         return Response("OK")
+
+
+class DuplicateSurveyView(TemplateView):
+    def get(self, request, uuid, **kwargs):
+        ss = get_object_or_404(SubstanceSurvey, uuid=uuid)
+        ss.pk = None
+        ss.save()
+        return HttpResponseRedirect(reverse_lazy('index'))
 
 
 class SubstanceSurveyListView(TemplateView):

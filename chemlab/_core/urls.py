@@ -15,7 +15,8 @@ from survey.views import SubstanceSurveyAddView,\
 						 ColorAPIView,\
 						 TestMethodAPIView,\
 						 ApperanceAPIView,\
-						 DetectedAPIView
+						 DetectedAPIView,\
+						 DuplicateSurveyView
 
 from django.conf.urls.static import static
 from django.conf import settings
@@ -38,6 +39,8 @@ urlpatterns = [
 	url(r'^api/testmethods/$', TestMethodAPIView.as_view(), name='api-testmethods'),
 	url(r'^api/apperance/$', ApperanceAPIView.as_view(), name='api-apperance'),
 	url(r'^api/detected/$', DetectedAPIView.as_view(), name='api-detected'),
+	url(r'^duplicate/(?P<uuid>[\w\d-]+)/$', DuplicateSurveyView.as_view(), name='duplicate-survey'),
+
     url(r'^admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
