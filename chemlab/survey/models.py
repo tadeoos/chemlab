@@ -232,7 +232,7 @@ class SubstanceSurvey(models.Model):
 			return ""
 			
 	def __unicode__(self):
-		return str(self.uuid)
+		return str(self.sample_code)
 
 	class Meta:
 		ordering = ['-added']
