@@ -80,110 +80,61 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
     def post(self, request, format=None):
         data = request.data
         s = SubstanceSurvey.objects.create()
-        get_data = data.get('date_acquired')
-        if get_data != '':
-            s.date_acquired = get_data
-        get_data = data.get('price')
-        if get_data != '':
-            s.price = get_data
-        get_data = data.get('sample_code')
-        if get_data != '':
-            s.sample_code = get_data
-        get_data = data.get('image')
-        if get_data != '':
-            s.image = get_data
-        get_data = data.get('observations')
-        if get_data != '':
-            s.observations = get_data
-        get_data = data.get('contact')
-        if get_data != '':
-            s.contact = get_data
 
-        get_data = data.get('region')
-        if get_data != '':
-            region, crt = Region.objects.get_or_create(name=get_data)
-            if not crt:
-                region.save()
-            s.region = region
+        SURVEY_ONLY_FIELDS = (
+            'date_acquired',
+            'price',
+            'sample_code',
+            'image',
+            'observations',
+            'contact'
+        )
+        SURVEY_FOREIGN_FIELDS = (
+            ('region', Region, 'name'),
+            ('city', City, 'name'),
+            ('acquired_from', AcquiredFrom, 'name'),
+            ('origin', Origin, 'name'),
+            ('user_code', UserCode, 'code'),
+            ('alias', Alias, 'name'),
+            ('substance', Substance, 'name'),
+            ('apperance', Apperance, 'name')
+        )
+        SURVEY_M2M_FIELDS = (
+            ('kinds', Kind),
+            ('color', Color),
+            ('testmethods', TestMethod)
+        )
 
-        get_data = data.get('city')
-        if get_data != '':
-            city, crt = City.objects.get_or_create(name=get_data)
-            if not crt:
-                city.save()
-            s.city = city
+        for field in SURVEY_ONLY_FIELDS:
+            value = data.get(field, '')
+            if value:
+                setattr(s, field, value)
 
-        get_data = data.get('acquired_from')
-        if get_data != '':
-            acquired_from, crt = AcquiredFrom.objects.get_or_create(name=get_data)
-            if not crt:
-                acquired_from.save()
-            s.acquired_from = acquired_from
+        for atr, model, arg_name in SURVEY_FOREIGN_FIELDS:
+            get_data = data.get(atr)
+            if get_data != '':
+                obj, crt = model.objects.get_or_create(**{arg_name: get_data})
+                if not crt:
+                    obj.save()
+                setattr(s, atr, obj)
 
-        get_data = data.get('origin')
-        if get_data != '':
-            origin, crt = Origin.objects.get_or_create(name=get_data)
-            if not crt:
-                origin.save()
-            s.origin = origin
-
-        get_data = data.get('user_code')
-        if get_data != '':
-            user_code, crt = UserCode.objects.get_or_create(code=get_data)
-            if not crt:
-                user_code.save()
-            s.user_code = user_code
-
-        get_data = data.get('alias')
-        if get_data != '':
-            alias, crt = Alias.objects.get_or_create(name=get_data)
-            if not crt:
-                alias.save()
-            s.alias = alias
-
-        get_data = data.get('substance')
-        if get_data != '':
-            substance, crt = Substance.objects.get_or_create(name=get_data)
-            if not crt:
-                substance.save()
-            s.substance = substance
-
-        get_data = data.get('apperance')
-        if get_data != '':
-            apperance, crt = Apperance.objects.get_or_create(name=get_data)
-            if not crt:
-                apperance.save()
-            s.apperance = apperance
-
-        get_data = data.get('kinds')
-        if get_data != '':
-            k_l = get_data.split(",")
-            for k in k_l:
-                kind, crt = Kind.objects.get_or_create(name=k)
-                s.kinds.add(kind)
-
-        get_data = data.get('color')
-        if get_data != '':
-            color_list = get_data.split(",")
-            for c in color_list:
-                color, crt = Color.objects.get_or_create(name=c)
-                s.color.add(color)
-
-        get_data = data.get('testmethods')
-        if get_data != '':
-            t_l = get_data.split(",")
-            for t in t_l:
-                testmethod, crt = TestMethod.objects.get_or_create(name=t)
-                s.testmethods.add(testmethod)
+        for attr, model in SURVEY_M2M_FIELDS:
+            get_data = data.get(attr)
+            if get_data:
+                data_split = get_data.split(",")
+                for el in data_split:
+                    add_el, crt = model.objects.get_or_create(name=el)
+                field = getattr(s, attr)
+                field.add(add_el)
 
         get_data = data.get('detected')
-        if get_data != '':
+        if get_data:
             d_l = get_data.split(",")
             for d in d_l:
                 try:
                     dect = Drug.objects.get(name=d)
                     s.detected.add(dect)
-                except:
+                except Drug.DoesNotExist:
                     pass
 
         s.save()
