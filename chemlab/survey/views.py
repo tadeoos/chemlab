@@ -1,24 +1,48 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, get_object_or_404
-from django.views.generic.edit import CreateView
-from django.views.generic.list import ListView
-from django.views.generic.base import TemplateView
-from django.urls import reverse_lazy
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic.base import TemplateView
+
 from rest_framework import generics
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
-from .models import *
-from .serializers import *
-from .forms import *
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
+from .forms import PrimaryForm, SecondaryForm, TertiaryForm
+from .models import (
+    SubstanceSurvey,
+    Region,
+    City,
+    AcquiredFrom,
+    Origin,
+    UserCode,
+    Alias,
+    Substance,
+    Apperance,
+    Kind,
+    Color,
+    TestMethod,
+    Drug,
+)
+from .serializers import (
+    SubstanceSurveySerializer,
+    RegionSerializer,
+    CitySerializer,
+    AcquiredFromSerializer,
+    OriginSerializer,
+    UserCodeSerializer,
+    AliasSerializer,
+    SubstanceSerializer,
+    ApperanceSerializer,
+    KindSerializer,
+    ColorSerializer,
+    TestMethodSerializer,
+    DrugSerializer,
+)
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -50,7 +74,7 @@ class SubstanceSurveyAPIView(generics.ListAPIView):
                 queryset = SubstanceSurvey.objects.filter(sample_code=sample)
             else:
                 queryset = SubstanceSurvey.objects.exclude(user_code__isnull=False)
-                
+
         return queryset
 
     def post(self, request, format=None):
@@ -231,6 +255,7 @@ class ColorAPIView(generics.ListAPIView):
 class TestMethodAPIView(generics.ListAPIView):
     queryset = TestMethod.objects.all()
     serializer_class = TestMethodSerializer
+
 
 class DetectedAPIView(generics.ListAPIView):
     queryset = Drug.objects.all()
