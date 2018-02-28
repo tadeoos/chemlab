@@ -6,9 +6,10 @@ from .models import *
 
 
 def duplicate_survey(modeladmin, request, queryset):
-	for o in queryset:
-		o.pk = None
-		o.save()
+    for o in queryset:
+        o.pk = None
+        o.save()
+
 
 admin.site.site_title = 'ChemLab - Restricted Zone'
 admin.site.site_header = 'ChemLab - Restricted Zone'
