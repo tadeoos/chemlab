@@ -1,12 +1,14 @@
-import os
+import environ
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = environ.Path(__file__) - 2
 
+env = environ.Env()
+env.read_env()
 
-DEBUG = True
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,7 +37,7 @@ ROOT_URLCONF = '_core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [str(BASE_DIR.path('templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -51,10 +53,8 @@ TEMPLATES = [
 WSGI_APPLICATION = '_core.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db('DJANGO_DATABASE_URL',
+                      default='sqlite:///' + str(BASE_DIR.path('db.sqlite3'))),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -78,15 +78,11 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
+STATIC_ROOT = env('STATIC_ROOT', default=str(BASE_DIR.path('assets')))
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    str(BASE_DIR.path('static'))
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-from _core.settings_secret import *
+MEDIA_URL = '/media/'
+MEDIA_ROOT = str(BASE_DIR.path('media'))
