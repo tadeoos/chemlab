@@ -19,7 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'survey',
     'rest_framework',
-    'bootstrap'
+    'bootstrap',
+    'django_markwhat',
+    'static_page',
 ]
 
 MIDDLEWARE = [
@@ -45,6 +47,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'static_page.context_processors.add_static_pages_to_context'
             ],
         },
     },
