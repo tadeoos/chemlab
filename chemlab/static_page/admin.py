@@ -8,13 +8,13 @@ class StaticPageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'content', 'published')
+            'fields': ('name', 'slug', 'published', 'content')
         }),
         ('SEO', {
-            # 'classes': ('collapse',),
             'fields': ('meta_description',),
         }),
     )
     search_fields = ('name',)
-    list_display = ('name', 'slug',)
+    list_display = ('name', 'slug', 'published')
+    list_editable = ('published',)
     prepopulated_fields = {"slug": ("name",)}
