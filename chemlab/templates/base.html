@@ -3,56 +3,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SINLab</title>
   <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="{% block meta_description %}{% endblock %}"/>
+  <title>{% block title %}SINLab{% endblock title %}</title>
 
-	<!-- jQuery -->
+    <!-- jQuery -->
 
-  	<!-- BOOSTRAP -->
-	<link
-		rel="stylesheet"
-		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-		integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-		crossorigin="anonymous">
+      <!-- BOOSTRAP -->
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+    integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+    crossorigin="anonymous">
 
 
-	<!-- CSS -->
-	<link rel="stylesheet" href="{% static 'css/style2.css' %}" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}" />
 
-	{% block extendhead %}{% endblock extendhead %}
+    {% block extendhead %}{% endblock extendhead %}
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-	  <a class="navbar-brand" href="{% url 'index' %}">SINLab</a>
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-	    <span class="navbar-toggler-icon"></span>
-	  </button>
-	  <div class="collapse navbar-collapse" id="navbarColor02">
-	    <ul class="navbar-nav mr-auto">
-	      <li class="nav-item active">
-	        <a class="nav-link" href="{% url 'index' %}">List</a>
-	      </li>
-	    </ul>
-	  </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="{% url 'index' %}">SINLab</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item {% if '/' == request.path_info %}active{% endif %}">
+            <a class="nav-link" href="{% url 'index' %}">List</a>
+          </li>
+          {% for page in static_pages %}
+            <li class="nav-item {% if stripped_path == page.slug %}active{% endif %}">
+              <a class="nav-link" href="{% url 'static-page' page.slug %}">{{ page.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
 
-	  {% block samplecodeform %}{% endblock samplecodeform %}
+      {% block samplecodeform %}{% endblock samplecodeform %}
 
-	</nav>
-	<div id="content-wrapper">
-		{% block content %}{% endblock content %}
-	</div>
+    </nav>
+    <div id="content-wrapper">
+    {% block content %}{% endblock content %}
+    </div>
 
-	<!-- FOOTER -->
-	<script
-	  src="https://code.jquery.com/jquery-3.2.1.min.js"
-	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-	  crossorigin="anonymous"></script>
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
-		integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-		crossorigin="anonymous"></script>
+    <!-- FOOTER -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+    integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+    crossorigin="anonymous"></script>
 
-	{% block extendfoot %}{% endblock extendfoot %}
-	<!-- FOOTER END -->
+    {% block extendfoot %}{% endblock extendfoot %}
+    <!-- FOOTER END -->
 </body>
 </html>
