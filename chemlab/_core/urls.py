@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf.urls.static import static
 
 from survey.views import (
     SubstanceSurveyAddView,
@@ -20,8 +22,7 @@ from survey.views import (
     DuplicateSurveyView
 )
 
-from django.conf.urls.static import static
-from django.conf import settings
+from static_page.views import StaticPageView
 
 
 urlpatterns = [
@@ -41,7 +42,7 @@ urlpatterns = [
     url(r'^api/apperance/$', ApperanceAPIView.as_view(), name='api-apperance'),
     url(r'^api/detected/$', DetectedAPIView.as_view(), name='api-detected'),
     url(r'^duplicate/(?P<uuid>[\w\d-]+)/$', DuplicateSurveyView.as_view(), name='duplicate-survey'),
-
     url(r'^admin/', admin.site.urls),
+    url(r'^(?P<slug>[-\w\d]+)/$', StaticPageView.as_view(), name="static-page"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

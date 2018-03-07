@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load markup %}
+{% block title %}
+  {{ block.super }} - {{ page.name }}
+{% endblock %}
+{% block meta_description %}
+  {{ page.meta_description }}
+{% endblock %}
+{% block content %}
+  <h1>{{ page.name }}</h1>
+  {{ page.content|commonmark }}
+{% endblock %}
